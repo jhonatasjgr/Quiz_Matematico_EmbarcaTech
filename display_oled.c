@@ -78,7 +78,8 @@ void jogar(){
         memset(ssd, 0, ssd1306_buffer_length);
         ssd1306_draw_string(ssd, 5, 10, quiz[i].question);
         ssd1306_draw_string(ssd, 5, 30, quiz[i].resposte);
-        ssd1306_draw_string(ssd, 5, 50," V ou F");
+        ssd1306_draw_string(ssd, 5, 50," A para verdadeiro");
+        ssd1306_draw_string(ssd, 5, 60," B para falso");
 
         render_on_display(ssd, &frame_area);
         
