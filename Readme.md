@@ -9,13 +9,11 @@ Ao final, o jogo exibe a quantidade de acertos e erros.
 - Desenvolvido utilizando BITDOGLAB e Raspberry Pi W.
 
 ## Como Jogar
-- Conecte o Raspberry Pi W e certifique-se de que o software do BITDOGLAB está instalado corretamente.
-- Abra o arquivo do jogo no dispositivo.
+- Execute o arquivo do jogo na BitDogLab.
 - Responda as perguntas de matemática uma por uma.
 - Ao final do quiz, veja quantos acertos e erros você teve!
  ## Requisitos
 - BitDogLab
-- Raspberry Pi Pico W com display oled e 2 botoes 
 
 ## Licença
 Este projeto é licenciado sob a Licença MIT.
