@@ -66,8 +66,8 @@ void jogar(){
     while(!iniciado){
         memset(ssd, 0, ssd1306_buffer_length);
         ssd1306_draw_string(ssd, 5, 10, "Pressione");
-        ssd1306_draw_string(ssd, 5, 20, "o botao");
-        ssd1306_draw_string(ssd, 5, 30, "para iniciar");
+        ssd1306_draw_string(ssd, 5, 25, "o botao");
+        ssd1306_draw_string(ssd, 5, 40, "para iniciar");
         render_on_display(ssd, &frame_area);
         if (gpio_get(BTN_TRUE) == 0 || gpio_get(BTN_FALSE) == 0) {
             iniciado = 1;
@@ -76,10 +76,10 @@ void jogar(){
     }
     for (int i = 0; i < 10; i++) {
         memset(ssd, 0, ssd1306_buffer_length);
-        ssd1306_draw_string(ssd, 5, 10, quiz[i].question);
-        ssd1306_draw_string(ssd, 5, 30, quiz[i].resposte);
-        ssd1306_draw_string(ssd, 5, 50," A para verdadeiro");
-        ssd1306_draw_string(ssd, 5, 60," B para falso");
+        ssd1306_draw_string(ssd, 5, 15, quiz[i].question);
+        ssd1306_draw_string(ssd, 5, 25, quiz[i].resposte);
+        ssd1306_draw_string(ssd, 0, 40," A para verdade");
+        ssd1306_draw_string(ssd, 0, 50," B para falso");
 
         render_on_display(ssd, &frame_area);
         
@@ -105,6 +105,14 @@ void jogar(){
     ssd1306_draw_string(ssd, 5, 10, result);
     snprintf(result, sizeof(result), "Erros: %d", wrong);
     ssd1306_draw_string(ssd, 5, 20, result);
+    if(correct>6){
+        snprintf(result, sizeof(result), "Parabens!");
+        ssd1306_draw_string(ssd, 5, 40, result);
+    }else{
+        snprintf(result, sizeof(result), "Estude Mais!");
+        ssd1306_draw_string(ssd, 5, 40, result);
+    }
+   
     render_on_display(ssd, &frame_area);
     
     sleep_ms(7000);
