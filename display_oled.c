@@ -6,12 +6,13 @@
 #include "inc/ssd1306.h"
 #include "hardware/i2c.h"
 
+//pinos do display oled
 const uint I2C_SDA = 14;
 const uint I2C_SCL = 15;
-
+//pinos dos botoes
 const uint BTN_TRUE = 5;  
 const uint BTN_FALSE = 6; 
-
+//pinos dos leds
 const uint LED_VERDE = 11;
 const uint LED_VERMELHO = 13;
 
@@ -32,7 +33,7 @@ Questao quiz[10] = {
     {"29 mais 14", "igual a 420", false},  
     {"32 vezes 8", "igual a 256", true},     
     {"18 vezes 4", "igual a 70", false},    
-};
+}; 
 
 void jogar(){
     stdio_init_all();
