@@ -9,16 +9,18 @@
 const uint I2C_SDA = 14;
 const uint I2C_SCL = 15;
 
-const uint BTN_TRUE = 5;  // Botão para "Verdadeiro"
-const uint BTN_FALSE = 6; // Botão para "Falso"
+const uint BTN_TRUE = 5;  
+const uint BTN_FALSE = 6; 
+
+const uint LED_VERDE = 11;
+const uint LED_VERMELHO = 13;
 
 typedef struct {
-    char question[32];
-    char resposte[32];
-    bool resposta; // true para "Verdadeiro", false para "Falso"
+    char questao[32];
+    char afirmacao[32];
+    bool resposta; 
 } Questao;
 
-// Lista de perguntas
 Questao quiz[10] = {
     {"34 menos 7", "igual a 220", false},
     {"51 vezes 15", "igual a 765", true},  
@@ -35,6 +37,11 @@ Questao quiz[10] = {
 void jogar(){
     stdio_init_all();
 
+    gpio_init(LED_VERDE);
+    gpio_set_dir(LED_VERDE, GPIO_OUT);
+    gpio_init(LED_VERMELHO);
+    gpio_set_dir(LED_VERMELHO, GPIO_OUT);
+
     // Inicializa I2C
     i2c_init(i2c1, ssd1306_i2c_clock * 1000);
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
@@ -42,14 +49,14 @@ void jogar(){
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
 
-    // Inicializa o display SSD1306
+    // Inicializa o display oled
     ssd1306_init();
 
-    // Configuração de área de renderização
+    // Configuração de area de renderização
     struct render_area frame_area = {0, ssd1306_width - 1, 0, ssd1306_n_pages - 1};
     calculate_render_area_buffer_length(&frame_area);
 
-    // Inicializa botões
+    // Inicializa botoes
     gpio_init(BTN_TRUE);
     gpio_set_dir(BTN_TRUE, GPIO_IN);
     gpio_pull_up(BTN_TRUE);
@@ -58,10 +65,11 @@ void jogar(){
     gpio_set_dir(BTN_FALSE, GPIO_IN);
     gpio_pull_up(BTN_FALSE);
 
-    // Variáveis de pontuação
-    int correct = 0, wrong = 0;
+    // Variaveis de pontuacao
+    int corretas = 0, erradas = 0;
 
     uint8_t ssd[ssd1306_buffer_length];
+
     int iniciado =0;
     while(!iniciado){
         memset(ssd, 0, ssd1306_buffer_length);
@@ -72,50 +80,56 @@ void jogar(){
         if (gpio_get(BTN_TRUE) == 0 || gpio_get(BTN_FALSE) == 0) {
             iniciado = 1;
         }
-        sleep_ms(200);
+        sleep_ms(100); // evitar duplo clique
     }
+
     for (int i = 0; i < 10; i++) {
         memset(ssd, 0, ssd1306_buffer_length);
-        ssd1306_draw_string(ssd, 5, 15, quiz[i].question);
-        ssd1306_draw_string(ssd, 5, 25, quiz[i].resposte);
+        ssd1306_draw_string(ssd, 5, 15, quiz[i].questao);
+        ssd1306_draw_string(ssd, 5, 25, quiz[i].afirmacao);
         ssd1306_draw_string(ssd, 0, 40," A para verdade");
         ssd1306_draw_string(ssd, 0, 50," B para falso");
 
         render_on_display(ssd, &frame_area);
         
-        // Aguarda resposta
+        
         bool respondido = false;
         while (!respondido) {
             if (gpio_get(BTN_TRUE) == 0) {
                 respondido = true;
-                if (quiz[i].resposta) correct++; else wrong++;
-            }else
-            if (gpio_get(BTN_FALSE) == 0) {
+                if (quiz[i].resposta) corretas++; else erradas++;
+            } 
+            else if (gpio_get(BTN_FALSE) == 0) {
                 respondido = true;
-                if (!quiz[i].resposta) correct++; else wrong++;
+                if (!quiz[i].resposta) corretas++; else erradas++;
             }
             sleep_ms(200);
         }
     }
 
-    // Exibe o resultado final
+    // resultado final
     memset(ssd, 0, ssd1306_buffer_length);
     char result[32];
-    snprintf(result, sizeof(result), "Acertos: %d", correct);
+    snprintf(result, sizeof(result), "Acertos: %d", corretas);
     ssd1306_draw_string(ssd, 5, 10, result);
-    snprintf(result, sizeof(result), "Erros: %d", wrong);
+    snprintf(result, sizeof(result), "Erros: %d", erradas);
     ssd1306_draw_string(ssd, 5, 20, result);
-    if(correct>6){
+    if(corretas>6){
         snprintf(result, sizeof(result), "Parabens!");
         ssd1306_draw_string(ssd, 5, 40, result);
+        gpio_put(LED_VERDE, 1);
     }else{
         snprintf(result, sizeof(result), "Estude Mais!");
         ssd1306_draw_string(ssd, 5, 40, result);
+        gpio_put(LED_VERMELHO, 1);
     }
    
     render_on_display(ssd, &frame_area);
     
     sleep_ms(7000);
+
+    gpio_put(LED_VERDE, 0);
+    gpio_put(LED_VERMELHO, 0);
     return;
 }
 int main() {
