@@ -3,6 +3,8 @@ Este é um jogo de quiz matemático simples, desenvolvido usando a plataforma BI
 O jogo consiste em 10 questões matemáticas, onde o usuário deve responder corretamente para acumular acertos. 
 Ao final, o jogo exibe a quantidade de acertos e erros.
 
+[LINK APRESENTAÇÃO](https://youtu.be/fozI1ofXXhg)
+
 ## Funcionalidades
 - 10 questões matemáticas.
 - Exibe a quantidade de acertos e erros no final do quiz.
